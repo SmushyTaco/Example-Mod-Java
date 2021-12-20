@@ -1,6 +1,4 @@
-plugins {
-    id("fabric-loom")
-}
+plugins { id("fabric-loom") }
 base {
     val archivesBaseName: String by project
     archivesName.set(archivesBaseName)
@@ -22,7 +20,7 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
 }
 tasks {
-    val javaVersion = JavaVersion.VERSION_16
+    val javaVersion = JavaVersion.VERSION_17
     withType<JavaCompile> {
         options.encoding = "UTF-8"
         sourceCompatibility = javaVersion.toString()

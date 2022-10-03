@@ -1,22 +1,13 @@
 plugins { id("fabric-loom") }
-base {
-    val archivesBaseName: String by project
-    archivesName.set(archivesBaseName)
-}
-val modVersion: String by project
-version = modVersion
-val mavenGroup: String by project
-group = mavenGroup
+base { archivesName.set(project.extra["archives_base_name"] as String) }
+version = project.extra["mod_version"] as String
+group = project.extra["maven_group"] as String
 repositories {}
 dependencies {
-    val minecraftVersion: String by project
-    minecraft("com.mojang", "minecraft", minecraftVersion)
-    val yarnMappings: String by project
-    mappings("net.fabricmc", "yarn", yarnMappings, null, "v2")
-    val loaderVersion: String by project
-    modImplementation("net.fabricmc", "fabric-loader", loaderVersion)
-    val fabricVersion: String by project
-    modImplementation("net.fabricmc.fabric-api", "fabric-api", fabricVersion)
+    minecraft("com.mojang", "minecraft", project.extra["minecraft_version"] as String)
+    mappings("net.fabricmc", "yarn", project.extra["yarn_mappings"] as String, null, "v2")
+    modImplementation("net.fabricmc", "fabric-loader", project.extra["loader_version"] as String)
+    modImplementation("net.fabricmc.fabric-api", "fabric-api", project.extra["fabric_version"] as String)
 }
 tasks {
     val javaVersion = JavaVersion.VERSION_17

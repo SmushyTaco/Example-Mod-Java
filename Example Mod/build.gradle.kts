@@ -29,6 +29,24 @@ java {
     targetCompatibility = JavaVersion.toVersion(javaVersion.get())
     withSourcesJar()
 }
+val licenseFile = run {
+    val rootLicense = layout.projectDirectory.file("LICENSE")
+    val parentLicense = layout.projectDirectory.file("../LICENSE")
+    when {
+        rootLicense.asFile.exists() -> {
+            logger.lifecycle("Using LICENSE from project root: {}", rootLicense.asFile)
+            rootLicense
+        }
+        parentLicense.asFile.exists() -> {
+            logger.lifecycle("Using LICENSE from parent directory: {}", parentLicense.asFile)
+            parentLicense
+        }
+        else -> {
+            logger.warn("No LICENSE file found in project or parent directory.")
+            null
+        }
+    }
+}
 tasks {
     withType<JavaCompile>().configureEach {
         options.encoding = "UTF-8"
@@ -43,23 +61,7 @@ tasks {
     withType<JavaExec>().configureEach { defaultCharacterEncoding = "UTF-8" }
     withType<Javadoc>().configureEach { options.encoding = "UTF-8" }
     withType<Test>().configureEach { defaultCharacterEncoding = "UTF-8" }
-    named<Jar>("jar") {
-        val rootLicense = layout.projectDirectory.file("LICENSE")
-        val parentLicense = layout.projectDirectory.file("../LICENSE")
-        val licenseFile = when {
-            rootLicense.asFile.exists() -> {
-                logger.lifecycle("Using LICENSE from project root: {}", rootLicense.asFile)
-                rootLicense
-            }
-            parentLicense.asFile.exists() -> {
-                logger.lifecycle("Using LICENSE from parent directory: {}", parentLicense.asFile)
-                parentLicense
-            }
-            else -> {
-                logger.warn("No LICENSE file found in project or parent directory.")
-                null
-            }
-        }
+    withType<Jar>().configureEach {
         licenseFile?.let {
             from(it) {
                 rename { original -> "${original}_${archiveBaseName.get()}" }
